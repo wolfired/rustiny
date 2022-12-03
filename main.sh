@@ -44,7 +44,7 @@ function color_msg() {
     fi
 }
 
-function get_id_name() {
+function get_unique_name() {
     local source_file=${1:?''}
 
     local source_file_name=`basename $source_file`
@@ -300,14 +300,14 @@ function cargo_build_or_run() {
     elif [[ 'bin' == $group ]]; then
         local bin=`select_bin $root_path/$member`
         if [[ -n $bin ]]; then
-            exec_cargo $act -p ${worksapce}_$member --bin `get_id_name $bin`
+            exec_cargo $act -p ${worksapce}_$member --bin `get_unique_name $bin`
         else
             color_msg y 'no bins'
         fi
     elif [[ 'example' == $group ]]; then
         local example=`select_example $root_path/$member`
         if [[ -n $example ]]; then
-            exec_cargo $act -p ${worksapce}_$member --example `get_id_name $example`
+            exec_cargo $act -p ${worksapce}_$member --example `get_unique_name $example`
         else
             color_msg y 'no examples'
         fi
