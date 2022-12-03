@@ -1,0 +1,15 @@
+[package]
+name = "rustiny_renderer"
+description = "tiny renderer"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/wolfired/rustiny/tree/main/renderer"
+repository = "https://github.com/wolfired/rustiny/tree/main/renderer"
+documentation = "https://docs.rs/rustiny_renderer"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rustiny_computer_graphic = "0.1.0"
+rustiny_xfile = "0.1.0"
