@@ -1,0 +1,18 @@
+[package]
+name = "rustiny"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = [
+    "number",
+    "fixed_point",
+    "linear_algebra",
+    "computer_graphic",
+    "xfile",
+    "renderer",
+]
+
+[dependencies]
