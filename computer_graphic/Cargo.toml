@@ -1,0 +1,16 @@
+[package]
+name = "rustiny_computer_graphic"
+description = "tiny computer graphic"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/wolfired/rustiny/computer_graphic"
+repository = "https://github.com/wolfired/rustiny/computer_graphic"
+documentation = "https://docs.rs/rustiny_computer_graphic"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rustiny_number = "0.1.10"
+rustiny_fixed_point = "0.1.10"
+rustiny_linear_algebra = "0.1.5"
