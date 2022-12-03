@@ -11,5 +11,5 @@ documentation = "https://docs.rs/rustiny_renderer"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rustiny_computer_graphic = "0.1.0"
-rustiny_xfile = "0.1.0"
+rustiny_computer_graphic = { path = "../computer_graphic" }
+rustiny_xfile = { path = "../xfile" }
