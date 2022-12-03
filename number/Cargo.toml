@@ -1,11 +1,11 @@
 [package]
 name = "rustiny_number"
 description = "tiny number"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 license = "MIT"
-homepage = "https://github.com/wolfired/rustiny_number"
-repository = "https://github.com/wolfired/rustiny_number"
+homepage = "https://github.com/wolfired/rustiny/number"
+repository = "https://github.com/wolfired/rustiny/number"
 documentation = "https://docs.rs/rustiny_number"
 
 [package.metadata.docs.rs]
