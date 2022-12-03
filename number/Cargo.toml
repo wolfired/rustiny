@@ -1,0 +1,16 @@
+[package]
+name = "rustiny_number"
+description = "tiny number"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/wolfired/rustiny_number"
+repository = "https://github.com/wolfired/rustiny_number"
+documentation = "https://docs.rs/rustiny_number"
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--html-in-header", "./html/katex_header.html"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
