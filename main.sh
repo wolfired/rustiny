@@ -107,20 +107,73 @@ function select_member() {
     fi
 }
 
-function select_bin() {
+function count_main() {
     local root_path_to_build=${1:?''}
-
-    # local main_path=$root_path_to_build/src
-    local ext_paths=(
-        $root_path_to_build/src/bin
-    )
 
     local builds=()
 
+    local main_path=$root_path_to_build/src
+    for build in `find $main_path -maxdepth 1 -type f | grep -P 'main.rs$'`; do
+        builds+=($build)
+    done
+
+    # local ext_paths=(
+    #     $root_path_to_build/src/bin
+    # )
+    # for ext_path in ${ext_paths[@]}; do
+    #     if [[ -d $ext_path ]]; then
+    #         for build in `find $ext_path -maxdepth 1 -type f | grep -P '[^\s]+?\.rs$'`; do
+    #             builds+=($build)
+    #         done
+    #         for build in `find $ext_path -type f | grep -P 'main.rs$'`; do
+    #             builds+=($build)
+    #         done
+    #     fi
+    # done
+
+    echo ${#builds[@]}
+}
+
+function count_bins() {
+    local root_path_to_build=${1:?''}
+
+    local builds=()
+
+    # local main_path=$root_path_to_build/src
     # for build in `find $main_path -maxdepth 1 -type f | grep -P 'main.rs$'`; do
     #     builds+=($build)
     # done
 
+    local ext_paths=(
+        $root_path_to_build/src/bin
+    )
+    for ext_path in ${ext_paths[@]}; do
+        if [[ -d $ext_path ]]; then
+            for build in `find $ext_path -maxdepth 1 -type f | grep -P '[^\s]+?\.rs$'`; do
+                builds+=($build)
+            done
+            for build in `find $ext_path -type f | grep -P 'main.rs$'`; do
+                builds+=($build)
+            done
+        fi
+    done
+
+    echo ${#builds[@]}
+}
+
+function select_bin() {
+    local root_path_to_build=${1:?''}
+
+    local builds=()
+
+    # local main_path=$root_path_to_build/src
+    # for build in `find $main_path -maxdepth 1 -type f | grep -P 'main.rs$'`; do
+    #     builds+=($build)
+    # done
+
+    local ext_paths=(
+        $root_path_to_build/src/bin
+    )
     for ext_path in ${ext_paths[@]}; do
         if [[ -d $ext_path ]]; then
             for build in `find $ext_path -maxdepth 1 -type f | grep -P '[^\s]+?\.rs$'`; do
@@ -143,22 +196,48 @@ function select_bin() {
         fi
         break
     done
+}
+
+function count_examples() {
+    local root_path_to_build=${1:?''}
+
+    local builds=()
+
+    # local main_path=$root_path_to_build/src
+    # for build in `find $main_path -maxdepth 1 -type f | grep -P 'main.rs$'`; do
+    #     builds+=($build)
+    # done
+
+    local ext_paths=(
+        $root_path_to_build/examples
+    )
+    for ext_path in ${ext_paths[@]}; do
+        if [[ -d $ext_path ]]; then
+            for build in `find $ext_path -maxdepth 1 -type f | grep -P '[^\s]+?\.rs$'`; do
+                builds+=($build)
+            done
+            for build in `find $ext_path -type f | grep -P 'main.rs$'`; do
+                builds+=($build)
+            done
+        fi
+    done
+
+    echo ${#builds[@]}
 }
 
 function select_example() {
     local root_path_to_build=${1:?''}
 
-    # local main_path=$root_path_to_build/src
-    local ext_paths=(
-        $root_path_to_build/examples
-    )
-
     local builds=()
 
+    # local main_path=$root_path_to_build/src
     # for build in `find $main_path -maxdepth 1 -type f | grep -P 'main.rs$'`; do
     #     builds+=($build)
     # done
 
+    local ext_paths=(
+        $root_path_to_build/examples
+    )
     for ext_path in ${ext_paths[@]}; do
         if [[ -d $ext_path ]]; then
             for build in `find $ext_path -maxdepth 1 -type f | grep -P '[^\s]+?\.rs$'`; do
@@ -183,37 +262,66 @@ function select_example() {
     done
 }
 
-function cargo_build() {
-    echo 'cargo_build'
-}
+function cargo_build_or_run() {
+    local act=${1:?''}
 
-function cargo_run() {
     local member=`select_member`
 
-    local act=
-    PS3="select(1-3): "
-    select act in 'main' 'bin' 'example'; do
-        act=${act:-'main'}
+    local labels=(
+        "main(`count_main ./$member`)"
+        "bin(`count_bins ./$member`)"
+        "example(`count_examples ./$member`)"
+    )
+
+    local items=(
+        'main'
+        'bin'
+        'example'
+    )
+
+    local item=
+
+    PS3="select(1-${#labels[@]}): "
+    select label in ${labels[@]}; do
+        local index=$(($REPLY-1))
+        if (( 0 <= $index && $index < ${#labels[@]} )); then
+            item=${items[$index]}
+        else
+            echo "Illegal Selection: $REPLY" 1>&2
+            exit 1
+        fi
         break
     done
 
-    if [[ 'main' = $act ]]; then
-        exec_cargo run -p ${worksapce}_$member
-    elif [[ 'bin' == $act ]]; then
+    if [[ 'main' = $item ]]; then
+        if (( 0 < `count_main ./$member` )); then
+            exec_cargo $act -p ${worksapce}_$member
+        else
+            color_msg y 'no main'
+        fi
+    elif [[ 'bin' == $item ]]; then
         local bin=`select_bin ./$member`
         if [[ -n $bin ]]; then
-            exec_cargo run -p ${worksapce}_$member --bin `get_id_name $bin`
+            exec_cargo $act -p ${worksapce}_$member --bin `get_id_name $bin`
         else
             color_msg y 'no bins'
         fi
-    elif [[ 'example' == $act ]]; then
+    elif [[ 'example' == $item ]]; then
         local example=`select_example ./$member`
         if [[ -n $example ]]; then
-            exec_cargo run -p ${worksapce}_$member --example `get_id_name $example`
+            exec_cargo $act -p ${worksapce}_$member --example `get_id_name $example`
         else
             color_msg y 'no examples'
         fi
     fi
+}
+
+function cargo_build() {
+    cargo_build_or_run 'build'
+}
+
+function cargo_run() {
+    cargo_build_or_run 'run'
 }
 
 function cargo_doc() {
@@ -232,8 +340,8 @@ function cargo_publish() {
 
 function select_cargo_command() {
     local commands=(
-        'build'
         'run'
+        'build'
         'doc'
         'publish'
     )
