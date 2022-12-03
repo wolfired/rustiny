@@ -335,7 +335,7 @@ function cargo_doc() {
 }
 
 function cargo_publish() {
-    exec_cargo y publish -p `select_member`
+    exec_cargo y publish -p ${worksapce}_`select_member`
 }
 
 function select_cargo_command() {
