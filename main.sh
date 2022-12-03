@@ -1,8 +1,8 @@
 root_path=$(dirname $(realpath $0))
 root_name=$(basename $root_path)
 
-export http_proxy=http://127.0.0.1:1080
-export https_proxy=http://127.0.0.1:1080
+export http_proxy=${http_proxy:-'http://127.0.0.1:1080'}
+export https_proxy=${https_proxy:-'http://127.0.0.1:1080'}
 
 worksapce='rustiny'
 members=(
@@ -14,6 +14,12 @@ members=(
     'renderer'
 )
 
+function color_ps3() {
+    local prompt=${1:-'Select '}
+
+    echo $'\e[32m'$prompt$'\e[m'
+}
+
 function color_msg() {
     local color=${1:?'(r)ed or (g)reen (b)lue (y)ellow (p)urple (c)yan'}
 
@@ -22,19 +28,19 @@ function color_msg() {
     fi
 
     if [[ 'r' == $color ]]; then
-        echo -e '\033[31m'${@:2}'\033[0m' # red
+        echo -e '\e[31m'${@:2}'\e[0m' # red
     elif [[ 'g' == $color ]]; then
-        echo -e '\033[32m'${@:2}'\033[0m' # green
+        echo -e '\e[32m'${@:2}'\e[0m' # green
     elif [[ 'b' == $color ]]; then
-        echo -e '\033[34m'${@:2}'\033[0m' # blue
+        echo -e '\e[34m'${@:2}'\e[0m' # blue
     elif [[ 'y' == $color ]]; then
-        echo -e '\033[33m'${@:2}'\033[0m' # yellow
+        echo -e '\e[33m'${@:2}'\e[0m' # yellow
     elif [[ 'p' == $color ]]; then
-        echo -e '\033[35m'${@:2}'\033[0m' # purple
+        echo -e '\e[35m'${@:2}'\e[0m' # purple
     elif [[ 'c' == $color ]]; then
-        echo -e '\033[36m'${@:2}'\033[0m' # cyan
+        echo -e '\e[36m'${@:2}'\e[0m' # cyan
     else
-        echo -e '\033[37m'${@:2}'\033[0m' # white
+        echo -e '\e[37m'${@:2}'\e[0m' # white
     fi
 }
 
@@ -86,22 +92,20 @@ function select_member() {
     local workspace=${1:-''}
 
     if [[ -n $workspace ]]; then
-        PS3="select(1-$((${#members[@]}+1))): "
+        PS3=`color_ps3 "select cargo package (1-$((${#members[@]}+1))): "`
         select label in $workspace ${members[@]}; do
             label=${label:-$workspace}
             echo $label
             break
         done
     else
-        PS3="select(1-${#members[@]}): "
+        PS3=`color_ps3 "select cargo package (1-${#members[@]}): "`
         select label in ${members[@]}; do
             local index=$(($REPLY-1))
-            if (( 0 <= $index && $index < ${#members[@]} )); then
-                echo ${members[$index]}
-            else
-                echo "Illegal Selection: $REPLY" 1>&2
-                exit 1
+            if (( 0 > $index || $index >= ${#members[@]} )); then
+                index=0
             fi
+            echo ${members[$index]}
             break
         done
     fi
@@ -185,15 +189,13 @@ function select_bin() {
         fi
     done
 
-    PS3="select(1-${#builds[@]}): "
+    PS3=`color_ps3 "select bin (1-${#builds[@]}): "`
     select label in ${builds[@]}; do
         local index=$(($REPLY-1))
-        if (( 0 <= $index && $index < ${#builds[@]} )); then
-            echo ${builds[$index]}
-        else
-            echo "Illegal Selection: $REPLY" 1>&2
-            exit 1
+        if (( 0 > $index || $index >= ${#builds[@]} )); then
+            index=0
         fi
+        echo ${builds[$index]}
         break
     done
 }
@@ -249,15 +251,13 @@ function select_example() {
         fi
     done
 
-    PS3="select(1-${#builds[@]}): "
+    PS3=`color_ps3 "select example (1-${#builds[@]}): "`
     select label in ${builds[@]}; do
         local index=$(($REPLY-1))
-        if (( 0 <= $index && $index < ${#builds[@]} )); then
-            echo ${builds[$index]}
-        else
-            echo "Illegal Selection: $REPLY" 1>&2
-            exit 1
+        if (( 0 > $index || $index >= ${#builds[@]} )); then
+            index=0
         fi
+        echo ${builds[$index]}
         break
     done
 }
@@ -268,46 +268,44 @@ function cargo_build_or_run() {
     local member=`select_member`
 
     local labels=(
-        "main(`count_main ./$member`)"
-        "bin(`count_bins ./$member`)"
-        "example(`count_examples ./$member`)"
+        "main(`count_main $root_path/$member`)"
+        "bin(`count_bins $root_path/$member`)"
+        "example(`count_examples $root_path/$member`)"
     )
 
-    local items=(
+    local groups=(
         'main'
         'bin'
         'example'
     )
 
-    local item=
+    local group=
 
-    PS3="select(1-${#labels[@]}): "
+    PS3=`color_ps3 "select group (1-${#labels[@]}): "`
     select label in ${labels[@]}; do
         local index=$(($REPLY-1))
-        if (( 0 <= $index && $index < ${#labels[@]} )); then
-            item=${items[$index]}
-        else
-            echo "Illegal Selection: $REPLY" 1>&2
-            exit 1
+        if (( 0 > $index || $index >= ${#labels[@]} )); then
+            index=0
         fi
+        group=${groups[$index]}
         break
     done
 
-    if [[ 'main' = $item ]]; then
-        if (( 0 < `count_main ./$member` )); then
+    if [[ 'main' = $group ]]; then
+        if (( 0 < `count_main $root_path/$member` )); then
             exec_cargo $act -p ${worksapce}_$member
         else
             color_msg y 'no main'
         fi
-    elif [[ 'bin' == $item ]]; then
-        local bin=`select_bin ./$member`
+    elif [[ 'bin' == $group ]]; then
+        local bin=`select_bin $root_path/$member`
         if [[ -n $bin ]]; then
             exec_cargo $act -p ${worksapce}_$member --bin `get_id_name $bin`
         else
             color_msg y 'no bins'
         fi
-    elif [[ 'example' == $item ]]; then
-        local example=`select_example ./$member`
+    elif [[ 'example' == $group ]]; then
+        local example=`select_example $root_path/$member`
         if [[ -n $example ]]; then
             exec_cargo $act -p ${worksapce}_$member --example `get_id_name $example`
         else
@@ -346,20 +344,22 @@ function select_cargo_command() {
         'publish'
     )
 
-    PS3="select(1-${#commands[@]}): "
+    PS3=`color_ps3 "select cargo command (1-${#commands[@]}): "`
     select label in ${commands[@]}; do
         local index=$(($REPLY-1))
-        if (( 0 <= $index && $index < ${#commands[@]} )); then
-            cargo_${commands[$index]}
-        else
-            echo "Illegal Selection: $REPLY" 1>&2
-            exit 1
+        if (( 0 > $index || $index >= ${#commands[@]} )); then
+            index=0
         fi
+        cargo_${commands[$index]}
         break
     done
 }
 
 function main() {
+    if [[ -n $http_proxy || -n $https_proxy ]]; then
+        color_msg y "using proxy: $http_proxy, $https_proxy"
+    fi
+
     select_cargo_command
 }
 main
