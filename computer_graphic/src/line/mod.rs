@@ -1,8 +1,14 @@
-use std::ops::{AddAssign, Neg, Shl, Sub, SubAssign};
+use std::ops::AddAssign;
+use std::ops::Neg;
+use std::ops::Shl;
+use std::ops::Sub;
+use std::ops::SubAssign;
 
-use rustiny_number::Number;
+use rustiny_number::Integer;
+use rustiny_number::One;
+use rustiny_number::Zero;
 
-pub fn line_bresenham<T: Number, F: FnMut(T, T)>(
+pub fn line_bresenham<T: Integer, F: FnMut(T, T)>(
     mut x0: T,
     mut y0: T,
     mut x1: T,
@@ -14,9 +20,11 @@ pub fn line_bresenham<T: Number, F: FnMut(T, T)>(
         + SubAssign<T>
         + Shl<T, Output = T>
         + Ord
-        + Neg<Output = T>,
+        + Neg<Output = T>
+        + Zero
+        + One,
 {
-    let steep = (x1 - x0).num_abs() < (y1 - y0).num_abs();
+    let steep = if x1 > x0 { x1 - x0 } else { x0 - x1 } < if y1 > y0 { y1 - y0 } else { y0 - y1 };
 
     if steep {
         (x0, y0) = (y0, x0);
@@ -29,12 +37,12 @@ pub fn line_bresenham<T: Number, F: FnMut(T, T)>(
     }
 
     let dx = x1 - x0;
-    let dx2 = dx << T::NUM_1;
+    let dx2 = dx << T::one();
 
-    let slope = (y1 - y0).num_abs() << T::NUM_1;
-    let mut slope_sum = T::NUM_0;
+    let slope = if y1 > y0 { y1 - y0 } else { y0 - y1 } << T::one();
+    let mut slope_sum = T::zero();
 
-    let step_y = if y0 > y1 { -T::NUM_1 } else { T::NUM_1 };
+    let step_y = if y0 > y1 { -T::one() } else { T::one() };
 
     let mut x = x0;
     let mut y = y0;
@@ -52,6 +60,7 @@ pub fn line_bresenham<T: Number, F: FnMut(T, T)>(
             y += step_y;
             slope_sum -= dx2;
         }
-        x += T::NUM_1;
+
+        x += T::one();
     }
 }

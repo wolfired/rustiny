@@ -13,3 +13,4 @@ documentation = "https://docs.rs/rustiny_renderer"
 [dependencies]
 rustiny_computer_graphic = { path = "../computer_graphic" }
 rustiny_xfile = { path = "../xfile" }
+rustiny_fixed_point = { path = "../fixed_point" }
