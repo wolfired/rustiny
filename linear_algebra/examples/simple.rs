@@ -1,54 +1,55 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
 
-use std::fmt::Debug;
-use std::ops::{Shr, SubAssign};
-use std::{error::Error, ops::Add};
+use std::error::Error;
 
 use rustiny_fixed_point::FixedPoint;
-use rustiny_linear_algebra::{raw_dot, Matrix, Vector};
-use rustiny_number::{BaseIntegerWrapper, Expend, Number, Shrink};
+use rustiny_linear_algebra::{Cross, CrossAssign, Matrix, Vector, Vector3, Vector4};
+use rustiny_number::{CheckedShl, CheckedShr, CheckedSqrt, Integer, Number};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let m0: Matrix<FixedPoint<i32, 8>, 2, 2> = [
-        [1.25f32.try_into()?, 2.5f32.try_into()?],
-        [2.5f32.try_into()?, 1.25f32.try_into()?],
+    for v in 0..=255 {
+        println!("{:?}", FixedPoint::<u8, 8>(v));
+    }
+
+    let mut fp0: FixedPoint<u8, 4> = 1.0625f32.try_into()?;
+    let fp1: FixedPoint<u8, 4> = 1.try_into()?;
+
+    fp0 -= fp1;
+
+    println!("{:?}", fp0.checked_sqrt().unwrap());
+
+    let m0: Vector4<FixedPoint<i16, 4>> = [
+        0.try_into()?,
+        1.25.try_into()?,
+        2.try_into()?,
+        3.try_into()?,
     ]
     .into();
-    let m1: Matrix<FixedPoint<i32, 8>, 2, 2> = [
-        [2.5f32.try_into()?, 1.25f32.try_into()?],
-        [1.25f32.try_into()?, 2.5f32.try_into()?],
+    let m1: Vector4<FixedPoint<i16, 4>> = [
+        0.try_into()?,
+        1.25.try_into()?,
+        2.try_into()?,
+        3.try_into()?,
     ]
     .into();
-    // let m2 = Matrix::<FixedPoint<i32, 8>, 2, 2>::new_identity();
-    println!("{}", m0 - m1);
 
-    let o = &mut [1, 0, 0, 4][..];
-    let l = &[1, 2, 3, 4][..];
-    let r = &[1, 2, 3, 4][..];
-    let d = raw_dot(l, r, 4)?;
-    println!("{:?}", d);
+    println!("{:?}", m0 + m1);
 
-    let v0: Vector<FixedPoint<i16, 4>, 3> = [
-        Into::<BaseIntegerWrapper<_>>::into(1).try_into()?,
-        Into::<BaseIntegerWrapper<_>>::into(0).try_into()?,
-        Into::<BaseIntegerWrapper<_>>::into(0).try_into()?,
-    ]
-    .into();
-    let v1: Vector<FixedPoint<i16, 4>, 3> = [
-        Into::<BaseIntegerWrapper<_>>::into(0).try_into()?,
-        Into::<BaseIntegerWrapper<_>>::into(1).try_into()?,
-        Into::<BaseIntegerWrapper<_>>::into(0).try_into()?,
-    ]
-    .into();
-    println!("{}", v0.cross(v1));
+    let m2: Vector3<f32> = [1.0, 1.0, 1.0].into();
+    println!("{}", m2.magnitude());
 
-    let aa = [3.0.try_into()?, 4.0.try_into()?, 0.0.try_into()?];
-    let mm: Vector<FixedPoint<i16, 4>, 3> = aa.into();
-    println!("{:?}", mm.magnitude());
+    let m3: Vector3<FixedPoint<i32, 8>> =
+        [1.0.try_into()?, 1.0.try_into()?, 1.0.try_into()?].into();
+    println!("{}", m3.magnitude());
 
-    let mm: Matrix<u8, 4, 3> = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]].into();
-    println!("{}", mm);
-    println!("{}", mm.transpose());
+    let x: Vector3<f32> = [1.0, 0.0, 0.0].into();
+    let y: Vector3<f32> = [0.0, 1.0, 0.0].into();
+    let z = x.cross(y);
+    println!("{}", z);
+
+    println!("{:?}", -129.25 as u8);
+    println!("{:?}", 129.25 as i8);
+
     Ok(())
 }
