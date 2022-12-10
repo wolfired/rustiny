@@ -8,6 +8,9 @@ homepage = "https://github.com/wolfired/rustiny/computer_graphic"
 repository = "https://github.com/wolfired/rustiny/computer_graphic"
 documentation = "https://docs.rs/rustiny_computer_graphic"
 
+[package.metadata.docs.rs]
+rustdoc-args = ["--html-in-header", "./html/katex_header.html"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
