@@ -1,0 +1,17 @@
+[package]
+name = "rustiny_bits"
+description = "tiny bits"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/wolfired/rustiny/tree/main/bits"
+repository = "https://github.com/wolfired/rustiny/tree/main/bits"
+documentation = "https://docs.rs/rustiny_bits"
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--html-in-header", "./html/katex_header.html"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rustiny_number = { path = "../number", version = "0.2.0" }

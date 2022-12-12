@@ -8,6 +8,7 @@ worksapce='rustiny'
 members=(
     'number'
     'fixed_point'
+    'bits'
     'linear_algebra'
     'computer_graphic'
     'xfile'
