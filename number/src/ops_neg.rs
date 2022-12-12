@@ -53,3 +53,16 @@ pub trait SaturatingNeg {
 pub trait WrappingNeg {
     fn wrapping_neg(self) -> Self;
 }
+
+macro_rules! impl_wrapping_neg4integer {
+    ($($t:ty), *) => {
+        $(
+            impl WrappingNeg for $t {
+                fn wrapping_neg(self) -> Self {
+                    self.wrapping_neg()
+                }
+            }
+        )*
+    };
+}
+impl_wrapping_neg4integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);

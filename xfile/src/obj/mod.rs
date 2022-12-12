@@ -1,4 +1,6 @@
 //! <http://paulbourke.net/dataformats/obj/>
+//!
+//!
 
 #![allow(dead_code)]
 
@@ -7,11 +9,15 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::path::Path;
 
+use rustiny_computer_graphic::Point2;
+use rustiny_computer_graphic::Point3;
+use rustiny_number::Number;
+
 #[derive(Debug)]
-pub struct Obj {
-    pub vs: Vec<(f32, f32, f32)>,
-    vts: Vec<(f32, f32)>,
-    vns: Vec<(f32, f32, f32)>,
+pub struct Obj<T: Number> {
+    pub vs: Vec<Point3<T>>,
+    vts: Vec<Point2<T>>,
+    vns: Vec<Point3<T>>,
     pub fs: Vec<(
         (usize, usize, usize),
         (usize, usize, usize),
@@ -19,7 +25,10 @@ pub struct Obj {
     )>,
 }
 
-impl Obj {
+impl<T: Number> Obj<T>
+where
+    T: TryFrom<f32>,
+{
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, Box<dyn Error>> {
         let mut file = OpenOptions::new().read(true).open(path)?;
 
@@ -40,7 +49,16 @@ impl Obj {
                     .take(3)
                     .map(|w| w.parse().unwrap())
                     .collect();
-                vs.push((ds[0], ds[1], ds[2]));
+                let Ok(v0) = ds[0].try_into() else {
+                    return Err("err".into());
+                };
+                let Ok(v1) = ds[1].try_into() else {
+                    return Err("err".into());
+                };
+                let Ok(v2) = ds[2].try_into() else {
+                    return Err("err".into());
+                };
+                vs.push([v0, v1, v2].into());
             } else if line.starts_with("vt ") {
                 let ds: Vec<f32> = line
                     .split_whitespace()
@@ -48,7 +66,13 @@ impl Obj {
                     .take(2)
                     .map(|w| w.parse().unwrap())
                     .collect();
-                vts.push((ds[0], ds[1]));
+                let Ok(v0) = ds[0].try_into() else {
+                        return Err("err".into());
+                    };
+                let Ok(v1) = ds[1].try_into() else {
+                        return Err("err".into());
+                    };
+                vts.push([v0, v1].into());
             } else if line.starts_with("vn ") {
                 let ds: Vec<f32> = line
                     .split_whitespace()
@@ -56,7 +80,16 @@ impl Obj {
                     .take(3)
                     .map(|w| w.parse().unwrap())
                     .collect();
-                vns.push((ds[0], ds[1], ds[2]));
+                let Ok(v0) = ds[0].try_into() else {
+                        return Err("err".into());
+                    };
+                let Ok(v1) = ds[1].try_into() else {
+                        return Err("err".into());
+                    };
+                let Ok(v2) = ds[2].try_into() else {
+                        return Err("err".into());
+                    };
+                vns.push([v0, v1, v2].into());
             } else if line.starts_with("f ") {
                 let ds: Vec<(usize, usize, usize)> = line
                     .split_whitespace()

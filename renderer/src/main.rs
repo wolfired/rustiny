@@ -8,6 +8,8 @@ use rustiny_computer_graphic::line_bresenham;
 use rustiny_fixed_point::FixedPoint;
 use rustiny_xfile::obj::Obj;
 use rustiny_xfile::tga::TGAImage;
+use rustiny_linear_algebra::X;
+use rustiny_linear_algebra::Y;
 
 fn main() -> Result<(), Box<dyn Error>> {
     african_head("E:\\Desktop\\african_head.obj", "E:\\Desktop\\4444.tga")?;
@@ -57,7 +59,7 @@ fn simple_line_f<P: AsRef<Path>>(tga_file: P) -> Result<(), Box<dyn Error>> {
     let w = (img.get_width() - 1) as f32;
     let h = (img.get_height() - 1) as f32;
 
-    let p0: (f32, f32) = (0.0, 0.0);
+    let p0: (f32, f32) = (-1.0, -1.0);
     let p1: (f32, f32) = (1.0, 1.0);
 
     let one: f32 = 1.0f32;
@@ -79,7 +81,7 @@ fn simple_line_f<P: AsRef<Path>>(tga_file: P) -> Result<(), Box<dyn Error>> {
 }
 
 fn african_head<P: AsRef<Path>>(obj_file: P, tga_file: P) -> Result<(), Box<dyn Error>> {
-    let obj = Obj::load(obj_file)?;
+    let obj = Obj::<f32>::load(obj_file)?;
 
     let mut img = TGAImage::new(1024, 1024);
 
@@ -87,36 +89,36 @@ fn african_head<P: AsRef<Path>>(obj_file: P, tga_file: P) -> Result<(), Box<dyn 
     let h = img.get_height() - 1;
 
     for f in obj.fs {
-        let p0: (f32, f32, f32) = obj.vs[f.0 .0 - 1];
-        let p1: (f32, f32, f32) = obj.vs[f.1 .0 - 1];
+        let p0 = obj.vs[f.0 .0 - 1];
+        let p1 = obj.vs[f.1 .0 - 1];
 
         line_bresenham(
-            ((p0.0 + 1f32) * w as f32 / 2f32) as i64,
-            ((p0.1 + 1f32) * h as f32 / 2f32) as i64,
-            ((p1.0 + 1f32) * w as f32 / 2f32) as i64,
-            ((p1.1 + 1f32) * h as f32 / 2f32) as i64,
+            ((p0.x() + 1f32) * w as f32 / 2f32) as i64,
+            ((p0.y() + 1f32) * h as f32 / 2f32) as i64,
+            ((p1.x() + 1f32) * w as f32 / 2f32) as i64,
+            ((p1.y() + 1f32) * h as f32 / 2f32) as i64,
             |x, y| img.set_color(x as u16, y as u16, 255, 255, 255, 255),
         );
 
-        let p0: (f32, f32, f32) = obj.vs[f.1 .0 - 1];
-        let p1: (f32, f32, f32) = obj.vs[f.2 .0 - 1];
+        let p0 = obj.vs[f.1 .0 - 1];
+        let p1 = obj.vs[f.2 .0 - 1];
 
         line_bresenham(
-            ((p0.0 + 1f32) * w as f32 / 2f32) as i64,
-            ((p0.1 + 1f32) * h as f32 / 2f32) as i64,
-            ((p1.0 + 1f32) * w as f32 / 2f32) as i64,
-            ((p1.1 + 1f32) * h as f32 / 2f32) as i64,
+            ((p0.x() + 1f32) * w as f32 / 2f32) as i64,
+            ((p0.y() + 1f32) * h as f32 / 2f32) as i64,
+            ((p1.x() + 1f32) * w as f32 / 2f32) as i64,
+            ((p1.y() + 1f32) * h as f32 / 2f32) as i64,
             |x, y| img.set_color(x as u16, y as u16, 255, 255, 255, 255),
         );
 
-        let p0: (f32, f32, f32) = obj.vs[f.2 .0 - 1];
-        let p1: (f32, f32, f32) = obj.vs[f.0 .0 - 1];
+        let p0 = obj.vs[f.2 .0 - 1];
+        let p1 = obj.vs[f.0 .0 - 1];
 
         line_bresenham(
-            ((p0.0 + 1f32) * w as f32 / 2f32) as i64,
-            ((p0.1 + 1f32) * h as f32 / 2f32) as i64,
-            ((p1.0 + 1f32) * w as f32 / 2f32) as i64,
-            ((p1.1 + 1f32) * h as f32 / 2f32) as i64,
+            ((p0.x() + 1f32) * w as f32 / 2f32) as i64,
+            ((p0.y() + 1f32) * h as f32 / 2f32) as i64,
+            ((p1.x() + 1f32) * w as f32 / 2f32) as i64,
+            ((p1.y() + 1f32) * h as f32 / 2f32) as i64,
             |x, y| img.set_color(x as u16, y as u16, 255, 255, 255, 255),
         );
     }

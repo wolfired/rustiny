@@ -14,7 +14,7 @@ rustdoc-args = ["--html-in-header", "./html/katex_header.html"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rustiny_number = "0.2.0"
+rustiny_number = { path = "../number", version = "0.2.0" }
 
 [dev-dependencies]
-rustiny_fixed_point = "0.2.0"
+rustiny_fixed_point = { path = "../fixed_point", version = "0.2.0" }

@@ -15,14 +15,14 @@ pub fn line_bresenham<T: Integer, F: FnMut(T, T)>(
     mut y1: T,
     mut f: F,
 ) where
-    T: AddAssign<T>
-        + Sub<T, Output = T>
-        + SubAssign<T>
-        + Shl<T, Output = T>
-        + Ord
-        + Neg<Output = T>
-        + Zero
-        + One,
+    T: AddAssign<T>,
+    T: Sub<T, Output = T>,
+    T: SubAssign<T>,
+    T: Shl<T, Output = T>,
+    T: Ord,
+    T: Neg<Output = T>,
+    T: Zero,
+    T: One,
 {
     let steep = if x1 > x0 { x1 - x0 } else { x0 - x1 } < if y1 > y0 { y1 - y0 } else { y0 - y1 };
 

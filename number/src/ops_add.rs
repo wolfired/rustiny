@@ -49,3 +49,16 @@ pub trait SaturatingAdd<Rhs = Self> {
 pub trait WrappingAdd<Rhs = Self> {
     fn wrapping_add(self, rhs: Rhs) -> Self;
 }
+
+macro_rules! impl_wrapping_add4integer {
+    ($($t:ty), *) => {
+        $(
+            impl WrappingAdd for $t {
+                fn wrapping_add(self, rhs: Self) -> Self {
+                    self.wrapping_add(rhs)
+                }
+            }
+        )*
+    };
+}
+impl_wrapping_add4integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
