@@ -2,35 +2,70 @@
 //!
 //!
 
-use std::cmp::Ord;
 use std::error::Error;
-use std::fmt::Display;
-use std::ops::Shl;
-use std::ops::ShrAssign;
-use std::ops::SubAssign;
 
-use rustiny_number::CheckedAdd;
 use rustiny_number::Integer;
-use rustiny_number::One;
-use rustiny_number::Tof32;
-use rustiny_number::Tof64;
 use rustiny_number::Zero;
 
 use crate::FixedPoint;
+
+macro_rules! impl_try_from_integer {
+    ($($t:ty), *) => {
+        $(
+            impl<T: Integer, const P: usize> TryFrom<$t> for FixedPoint<T, P>
+            {
+                type Error = Box<dyn Error>;
+
+                fn try_from(value: $t) -> Result<Self, Self::Error> {
+                    let Ok(value) = value.try_into() else {
+                        return Err(format!("{} 超出有效范围: [{}, {}]", value, <$t>::MIN, <$t>::MAX).into());
+                    };
+
+                    if T::zero() == value {
+                        return Ok(Self(value));
+                    }
+
+                    let min = T::MIN >> P;
+                    let max = T::MAX >> P;
+
+                    if value < min || max < value {
+                        return Err(format!("{} 超出有效范围: [{}, {}]", value, min, max).into());
+                    }
+
+                    Ok(Self(value << P))
+                }
+            }
+        )*
+    }
+}
+impl_try_from_integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
+
+impl<T: Integer, const P: usize> TryFrom<f32> for FixedPoint<T, P> {
+    type Error = Box<dyn Error>;
+
+    fn try_from(value: f32) -> Result<Self, Self::Error> {
+        let Ok(value) = ((value * (1 << P) as f32).round() as i128).try_into() else {
+            return Err(format!("{} 超出有效范围: [{}, {}]", value, T::MIN, T::MAX).into());
+        };
+        Ok(Self(value))
+    }
+}
+
+impl<T: Integer, const P: usize> TryFrom<f64> for FixedPoint<T, P> {
+    type Error = Box<dyn Error>;
+
+    fn try_from(value: f64) -> Result<Self, Self::Error> {
+        let Ok(value) = ((value * (1 << P) as f64).round() as i128).try_into() else {
+            return Err(format!("{} 超出有效范围: [{}, {}]", value, T::MIN, T::MAX).into());
+        };
+        Ok(Self(value))
+    }
+}
 
 macro_rules! impl_try_into_integer {
     ($($t:ty), *) => {
         $(
             impl<T: Integer, const P: usize> TryFrom<FixedPoint<T, P>> for $t
-            where
-                T: TryInto<$t>,
-                T: Shl<usize, Output = T>,
-                T: ShrAssign<usize>,
-                T: Display,
-                T: Ord,
-                T: SubAssign<T>,
-                T: One + Zero,
-                T: CheckedAdd,
             {
                 type Error = Box<dyn Error>;
 
@@ -78,19 +113,13 @@ macro_rules! impl_try_into_integer {
 }
 impl_try_into_integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
 
-impl<T: Integer, const P: usize> From<FixedPoint<T, P>> for f32
-where
-    T: Tof32,
-{
+impl<T: Integer, const P: usize> From<FixedPoint<T, P>> for f32 {
     fn from(value: FixedPoint<T, P>) -> Self {
         value.0.to_f32() / (1 << P) as f32
     }
 }
 
-impl<T: Integer, const P: usize> From<FixedPoint<T, P>> for f64
-where
-    T: Tof64,
-{
+impl<T: Integer, const P: usize> From<FixedPoint<T, P>> for f64 {
     fn from(value: FixedPoint<T, P>) -> Self {
         value.0.to_f64() / (1 << P) as f64
     }

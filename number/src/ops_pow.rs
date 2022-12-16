@@ -2,80 +2,65 @@
 //!
 //!
 
-pub trait Pow<Rhs = Self> {
+pub trait Pow<Rhs = u32> {
     fn pow(self, exp: Rhs) -> Self;
 }
 
-macro_rules! impl_pow4integer {
-    ($($t:ty), *) => {
-        $(
-            impl Pow for $t {
-                fn pow(self, rhs: Self) -> Self {
-                    self.pow(rhs.try_into().unwrap())
-                }
-            }
-        )*
-    };
-}
-impl_pow4integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
-
-macro_rules! impl_pow4float {
-    ($($t:ty), *) => {
-        $(
-            impl Pow for $t {
-                fn pow(self, rhs: Self) -> Self {
-                    self.powi(rhs as i32)
-                }
-            }
-        )*
-    };
-}
-impl_pow4float!(f32, f64);
-
-pub trait CheckedPow<Rhs = Self>
+pub trait CheckedPow<Rhs = u32>
 where
     Self: Sized,
 {
-    fn checked_pow(self, rhs: Rhs) -> Option<Self>;
+    fn checked_pow(self, exp: Rhs) -> Option<Self>;
 }
 
-macro_rules! impl_checked_pow4integer {
-    ($($t:ty), *) => {
-        $(
-            impl CheckedPow for $t {
-                fn checked_pow(self, rhs: Self) -> Option<Self> {
-                    self.checked_pow(rhs.try_into().unwrap())
-                }
-            }
-        )*
-    };
-}
-impl_checked_pow4integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);
-
-macro_rules! impl_checked_pow4float {
-    ($($t:ty), *) => {
-        $(
-            impl CheckedPow for $t {
-                fn checked_pow(self, rhs: Self) -> Option<Self> {
-                    Some(self.powi(rhs as i32))
-                }
-            }
-        )*
-    };
-}
-impl_checked_pow4float!(f32, f64);
-
-pub trait OverflowingPow<Rhs = Self>
+pub trait OverflowingPow<Rhs = u32>
 where
     Self: Sized,
 {
-    fn overflowing_pow(self, rhs: Rhs) -> (Self, bool);
+    fn overflowing_pow(self, exp: Rhs) -> (Self, bool);
 }
 
-pub trait SaturatingPow<Rhs = Self> {
-    fn saturating_pow(self, rhs: Rhs) -> Self;
+pub trait SaturatingPow<Rhs = u32> {
+    fn saturating_pow(self, exp: Rhs) -> Self;
 }
 
-pub trait WrappingPow<Rhs = Self> {
-    fn wrapping_pow(self, rhs: Rhs) -> Self;
+pub trait WrappingPow<Rhs = u32> {
+    fn wrapping_pow(self, exp: Rhs) -> Self;
 }
+
+macro_rules! impl4integer {
+    ($($t:ty), *) => {
+        $(
+            impl Pow for $t {
+                fn pow(self, exp: u32) -> Self {
+                    self.pow(exp)
+                }
+            }
+
+            impl CheckedPow for $t {
+                fn checked_pow(self, exp: u32) -> Option<Self> {
+                    self.checked_pow(exp)
+                }
+            }
+
+            impl OverflowingPow for $t {
+                fn overflowing_pow(self, exp: u32) -> (Self, bool) {
+                    self.overflowing_pow(exp)
+                }
+            }
+
+            impl SaturatingPow for $t {
+                fn saturating_pow(self, exp: u32) -> Self {
+                    self.saturating_pow(exp)
+                }
+            }
+
+            impl WrappingPow for $t {
+                fn wrapping_pow(self, exp: u32) -> Self {
+                    self.wrapping_pow(exp)
+                }
+            }
+        )*
+    };
+}
+impl4integer!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize);

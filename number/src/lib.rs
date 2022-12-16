@@ -9,6 +9,13 @@ pub use lib_inner::Number;
 pub use lib_inner::Signed;
 pub use lib_inner::Unsigned;
 
+mod ops_abs;
+pub use ops_abs::Abs;
+pub use ops_abs::CheckedAbs;
+pub use ops_abs::OverflowingAbs;
+pub use ops_abs::SaturatingAbs;
+pub use ops_abs::WrappingAbs;
+
 mod ops_ones;
 pub use ops_ones::CountOnes;
 pub use ops_ones::LeadingOnes;

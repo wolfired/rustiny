@@ -12,8 +12,6 @@ use rustiny_number::WrappingNeg;
 use rustiny_number::WrappingSub;
 use rustiny_number::Zero;
 
-pub mod tex;
-
 /// 位操作
 /// 
 /// [unset_rightmost_one](`Self::unset_rmo`)    
@@ -25,8 +23,8 @@ pub mod tex;
 /// [set_trailing_zeros_unset_rest_bits](`Self::set_tzs_unset_rest_bs`)    
 /// [unset_trailing_ones_set_rest_bits](`Self::unset_tos_set_rest_bs`)    
 /// [isolate_rightmost_one_unset_rest_bits](`Self::isolate_rmo_unset_rest_bs`)    
-/// [set_rightmost_one_and_rightside_bits_unset_leftside_bits](`Self::set_rmo_and_rside_bs_unset_lside_bs`)    
-/// [set_rightmost_zero_and_rightside_bits_unset_leftside_bits](`Self::set_rmz_and_rside_bs_unset_lside_bs`)    
+/// [set_rightmost_one_rightside_bits_unset_leftside_bits](`Self::set_rmo_rside_bs_unset_lside_bs`)    
+/// [set_rightmost_zero_rightside_bits_unset_leftside_bits](`Self::set_rmz_rside_bs_unset_lside_bs`)    
 pub trait Bits {
     /// $ x \ \\& \ (x-1) $：最右边1置0
     /// ```rust
@@ -138,21 +136,21 @@ pub trait Bits {
     /// ```rust
     /// use rustiny_bs::Bits;
     ///
-    /// assert_eq!(0b_0000_1111u8, 0b_1010_1000u8.set_rmo_and_rside_bs_unset_lside_bs());
-    /// assert_eq!(0b_1111_1111u8, 0b_0000_0000u8.set_rmo_and_rside_bs_unset_lside_bs()); // 无1全置1
-    /// assert_eq!(0b_0000_0001u8, 0b_0000_1111u8.set_rmo_and_rside_bs_unset_lside_bs()); // 尾部（右边）有1，结果为1
+    /// assert_eq!(0b_0000_1111u8, 0b_1010_1000u8.set_rmo_rside_bs_unset_lside_bs());
+    /// assert_eq!(0b_1111_1111u8, 0b_0000_0000u8.set_rmo_rside_bs_unset_lside_bs()); // 无1全置1
+    /// assert_eq!(0b_0000_0001u8, 0b_0000_1111u8.set_rmo_rside_bs_unset_lside_bs()); // 尾部（右边）有1，结果为1
     /// ```
-    fn set_rmo_and_rside_bs_unset_lside_bs(self) -> Self;
+    fn set_rmo_rside_bs_unset_lside_bs(self) -> Self;
 
     /// $ x \ \oplus \ (x+1) $：最右边0及其右边位置1，其左边位置0
     /// ```rust
     /// use rustiny_bs::Bits;
     ///
-    /// assert_eq!(0b_0000_1111u8, 0b_0101_0111u8.set_rmz_and_rside_bs_unset_lside_bs());
-    /// assert_eq!(0b_1111_1111u8, 0b_1111_1111u8.set_rmz_and_rside_bs_unset_lside_bs()); // 无0全置1
-    /// assert_eq!(0b_0000_0001u8, 0b_1111_0000u8.set_rmz_and_rside_bs_unset_lside_bs()); // 尾部（右边）无1，结果为1
+    /// assert_eq!(0b_0000_1111u8, 0b_0101_0111u8.set_rmz_rside_bs_unset_lside_bs());
+    /// assert_eq!(0b_1111_1111u8, 0b_1111_1111u8.set_rmz_rside_bs_unset_lside_bs()); // 无0全置1
+    /// assert_eq!(0b_0000_0001u8, 0b_1111_0000u8.set_rmz_rside_bs_unset_lside_bs()); // 尾部（右边）无1，结果为1
     /// ```
-    fn set_rmz_and_rside_bs_unset_lside_bs(self) -> Self;
+    fn set_rmz_rside_bs_unset_lside_bs(self) -> Self;
 
     /// 有效位是否均为1
     ///
@@ -217,9 +215,9 @@ where
     T: BitOr<T, Output = T>,
     T: BitXor<T, Output = T>,
     T: Not<Output = T>,
-    T: WrappingAdd<T>,
+    T: WrappingAdd,
     T: WrappingNeg,
-    T: WrappingSub<T>,
+    T: WrappingSub,
     T: One,
 {
     fn unset_rmo(self) -> Self {
@@ -258,11 +256,11 @@ where
         self & self.wrapping_neg()
     }
 
-    fn set_rmo_and_rside_bs_unset_lside_bs(self) -> Self {
+    fn set_rmo_rside_bs_unset_lside_bs(self) -> Self {
         self ^ self.wrapping_sub(T::one())
     }
 
-    fn set_rmz_and_rside_bs_unset_lside_bs(self) -> Self {
+    fn set_rmz_rside_bs_unset_lside_bs(self) -> Self {
         self ^ self.wrapping_add(T::one())
     }
 }

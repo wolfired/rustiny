@@ -16,20 +16,24 @@
 //! $$ \sqrt{a} \cdot 2^n = a^{\frac 1 2} \cdot 2^n = a^{\frac 1 2} \cdot (2^n \cdot 2^n)^{\frac 1 2} = (a \cdot 2^n \cdot 2^n)^{\frac 1 2} = (A \cdot 2^n)^{\frac 1 2} = \sqrt{A \verb|<<| n} $$
 //!
 
+mod convert;
 mod fmt;
-mod from;
-mod into;
 
 mod lib_inner;
 pub use lib_inner::FixedPoint;
 
-mod number;
+mod ops_abs;
 mod ops_add;
 mod ops_cmp;
 mod ops_div;
 mod ops_mul;
 mod ops_neg;
+mod ops_ones;
+mod ops_pow;
 mod ops_rem;
 mod ops_shl;
 mod ops_shr;
+mod ops_sqrt;
 mod ops_sub;
+mod ops_tofxx;
+mod ops_zeros;

@@ -12,9 +12,9 @@ use rustiny_linear_algebra::X;
 use rustiny_linear_algebra::Y;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    african_head("E:\\Desktop\\african_head.obj", "E:\\Desktop\\4444.tga")?;
-    simple_line_fp("E:\\Desktop\\5555.tga")?;
-    simple_line_f("E:\\Desktop\\6666.tga")?;
+    simple_line_fp("E:\\Desktop\\4444.tga")?;
+    simple_line_f("E:\\Desktop\\5555.tga")?;
+    african_head("E:\\Desktop\\african_head.obj", "E:\\Desktop\\6666.tga")?;
 
     Ok(())
 }

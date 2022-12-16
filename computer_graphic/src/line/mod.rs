@@ -1,29 +1,12 @@
-use std::ops::AddAssign;
-use std::ops::Neg;
-use std::ops::Shl;
-use std::ops::Sub;
-use std::ops::SubAssign;
+use rustiny_number::Signed;
 
-use rustiny_number::Integer;
-use rustiny_number::One;
-use rustiny_number::Zero;
-
-pub fn line_bresenham<T: Integer, F: FnMut(T, T)>(
+pub fn line_bresenham<T: Signed, F: FnMut(T, T)>(
     mut x0: T,
     mut y0: T,
     mut x1: T,
     mut y1: T,
     mut f: F,
-) where
-    T: AddAssign<T>,
-    T: Sub<T, Output = T>,
-    T: SubAssign<T>,
-    T: Shl<T, Output = T>,
-    T: Ord,
-    T: Neg<Output = T>,
-    T: Zero,
-    T: One,
-{
+) {
     let steep = if x1 > x0 { x1 - x0 } else { x0 - x1 } < if y1 > y0 { y1 - y0 } else { y0 - y1 };
 
     if steep {
