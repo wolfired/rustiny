@@ -14,48 +14,10 @@
 //!    33=compressed color-mapped data, using Huffman, Delta, and runlength encoding. 4-pass quadtree-type process.
 //!
 
-use std::error::Error;
-use std::fmt::Debug;
-use std::fmt::Display;
+mod error;
+pub use error::TGAError;
 
-pub mod color;
-pub mod header;
+mod header;
 
 mod image;
 pub use image::TGAImage;
-
-pub enum TGAError {
-    FailNew = 1,
-    FailLoad = 2,
-    Header = 3,
-}
-
-impl Error for TGAError {}
-
-impl Debug for TGAError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Self::FailNew => "新建失败",
-                Self::FailLoad => "加载失败",
-                Self::Header => "文件头",
-            }
-        )
-    }
-}
-
-impl Display for TGAError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Self::FailNew => "新建失败",
-                Self::FailLoad => "加载失败",
-                Self::Header => "文件头",
-            }
-        )
-    }
-}

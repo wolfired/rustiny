@@ -3,28 +3,28 @@ use std::fmt::Display;
 use std::io::Write;
 use std::convert::TryInto;
 
-use super::TGAError;
+use super::error::TGAError;
 
-pub(super) const TGAHEADER_BYTES_COUNT: usize = 18;
+pub const TGAHEADER_BYTES_COUNT: usize = 18;
 
 #[derive(Default)]
-pub(super) struct TGAHeader {
-    pub(super) id_length: u8,
-    pub(super) color_map_type: u8,
-    pub(super) image_type: u8,
-    pub(super) color_map_origin: u16,
-    pub(super) color_map_entries_count: u16,
-    pub(super) color_map_bits_per_entry: u8,
-    pub(super) image_origin_x: u16,
-    pub(super) image_origin_y: u16,
-    pub(super) image_width: u16,
-    pub(super) image_height: u16,
-    pub(super) image_bits_per_pixel: u8,
-    pub(super) image_descriptor: u8,
+pub struct TGAHeader {
+    pub id_length: u8,
+    pub color_map_type: u8,
+    pub image_type: u8,
+    pub color_map_origin: u16,
+    pub color_map_entries_count: u16,
+    pub color_map_bits_per_entry: u8,
+    pub image_origin_x: u16,
+    pub image_origin_y: u16,
+    pub image_width: u16,
+    pub image_height: u16,
+    pub image_bits_per_pixel: u8,
+    pub image_descriptor: u8,
 }
 
 impl TGAHeader {
-    pub(super) fn from_bytes(bytes: &[u8]) -> Result<Self, Box<dyn Error>> {
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self, Box<dyn Error>> {
         if TGAHEADER_BYTES_COUNT > bytes.len() {
             return Err(TGAError::Header.into());
         }
@@ -45,7 +45,7 @@ impl TGAHeader {
         })
     }
 
-    pub(super) fn to_bytes(&self, mut bytes: &mut [u8]) -> Result<(), Box<dyn Error>> {
+    pub fn to_bytes(&self, mut bytes: &mut [u8]) -> Result<(), Box<dyn Error>> {
         if TGAHEADER_BYTES_COUNT > bytes.len() {
             return Err(TGAError::Header.into());
         }
