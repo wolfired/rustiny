@@ -16,8 +16,8 @@
 //! $$ \sqrt{a} \cdot 2^n = a^{\frac 1 2} \cdot 2^n = a^{\frac 1 2} \cdot (2^n \cdot 2^n)^{\frac 1 2} = (a \cdot 2^n \cdot 2^n)^{\frac 1 2} = (A \cdot 2^n)^{\frac 1 2} = \sqrt{A \verb|<<| n} $$
 //!
 
-pub mod cmp;
-pub mod convert;
-pub mod fmt;
-pub mod ops;
+mod cmp;
+mod convert;
+mod fmt;
+mod ops;
 pub mod types;
