@@ -2,8 +2,8 @@
 //!
 //!
 
+mod convert;
 mod fmt;
-mod from;
 
 mod mod_inner;
 pub use mod_inner::Matrix;

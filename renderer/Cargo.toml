@@ -18,3 +18,4 @@ rustiny_computer_graphic = { path = "../computer_graphic", version = "0.2.0" }
 rustiny_xfile = { path = "../xfile", version = "0.2.0" }
 rustiny_fixed_point = { path = "../fixed_point", version = "0.2.0" }
 rustiny_linear_algebra = { path = "../linear_algebra", version = "0.2.0" }
+rustiny_number = { path = "../number", version = "0.2.0" }

@@ -21,6 +21,7 @@ use std::ops::ShrAssign;
 use std::ops::Sub;
 use std::ops::SubAssign;
 
+use crate::CheckedSqrt;
 use crate::ops_abs::CheckedAbs;
 use crate::ops_abs::OverflowingAbs;
 use crate::ops_abs::SaturatingAbs;
@@ -60,7 +61,17 @@ use crate::WrappingShr;
 use crate::WrappingSub;
 use crate::Zero;
 
-pub trait Number: Clone + Default + Debug + Display + Copy + One + Zero {}
+pub trait Number
+where
+    Self: Clone + Default + Debug + Display + Copy + One + Zero,
+    Self: Add<Self, Output = Self> + AddAssign<Self>,
+    Self: Sub<Self, Output = Self> + SubAssign<Self>,
+    Self: Mul<Self, Output = Self> + MulAssign<Self>,
+    Self: Div<Self, Output = Self> + DivAssign<Self>,
+    Self: Rem<Self, Output = Self> + RemAssign<Self>,
+    Self: CheckedSqrt,
+{
+}
 
 macro_rules! impl_number {
     ($($t:ty), *) => {
@@ -71,7 +82,12 @@ macro_rules! impl_number {
 }
 impl_number!(u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize, f32, f64);
 
-pub trait Float: Number {}
+pub trait Float
+where
+    Self: Number,
+    Self: Neg<Output = Self>,
+{
+}
 
 macro_rules! impl_float {
     ($($t:ty), *) => {
@@ -86,11 +102,11 @@ impl_float!(f32, f64);
 pub trait Integer
 where
     Self: Number,
-    Self: Add<Self, Output = Self> + AddAssign<Self> + CheckedAdd + OverflowingAdd + SaturatingAdd + WrappingAdd,
-    Self: Sub<Self, Output = Self> + SubAssign<Self> + CheckedSub + OverflowingSub + SaturatingSub + WrappingSub,
-    Self: Mul<Self, Output = Self> + MulAssign<Self> + CheckedMul + OverflowingMul + SaturatingMul + WrappingMul,
-    Self: Div<Self, Output = Self> + DivAssign<Self> + CheckedDiv + OverflowingDiv + SaturatingDiv + WrappingDiv,
-    Self: Rem<Self, Output = Self> + RemAssign<Self> + CheckedRem + OverflowingRem + WrappingRem,
+    Self: CheckedAdd + OverflowingAdd + SaturatingAdd + WrappingAdd,
+    Self: CheckedSub + OverflowingSub + SaturatingSub + WrappingSub,
+    Self: CheckedMul + OverflowingMul + SaturatingMul + WrappingMul,
+    Self: CheckedDiv + OverflowingDiv + SaturatingDiv + WrappingDiv,
+    Self: CheckedRem + OverflowingRem + WrappingRem,
     Self: CheckedNeg + OverflowingNeg + WrappingNeg,
     Self: CheckedShl + OverflowingShl + WrappingShl,
     Self: CheckedShr + OverflowingShr + WrappingShr,

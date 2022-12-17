@@ -2,7 +2,7 @@
 //!
 //!
 
-mod from;
+mod convert;
 
 mod mod_inner;
 pub use mod_inner::Vector;

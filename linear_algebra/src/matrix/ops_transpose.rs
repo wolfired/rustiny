@@ -3,7 +3,6 @@
 //!
 
 use rustiny_number::Number;
-use rustiny_number::Zero;
 
 use crate::Matrix;
 
@@ -13,10 +12,7 @@ pub trait Transpose {
     fn transpose(self) -> Self::Output;
 }
 
-impl<T: Number, const R: usize, const C: usize> Transpose for Matrix<T, R, C>
-where
-    T: Zero,
-{
+impl<T: Number, const R: usize, const C: usize> Transpose for Matrix<T, R, C> {
     type Output = Matrix<T, C, R>;
 
     fn transpose(self) -> Self::Output {
@@ -32,10 +28,7 @@ where
     }
 }
 
-impl<T: Number, const R: usize, const C: usize> Transpose for &Matrix<T, R, C>
-where
-    T: Zero,
-{
+impl<T: Number, const R: usize, const C: usize> Transpose for &Matrix<T, R, C> {
     type Output = Matrix<T, C, R>;
 
     fn transpose(self) -> Self::Output {

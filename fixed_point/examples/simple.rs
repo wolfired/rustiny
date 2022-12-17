@@ -18,6 +18,6 @@ use rustiny_number::OverflowingShl;
 fn main() -> Result<(), Box<dyn Error>> {
     let fp0: FixedPoint<i8, 4> = (-0.5f32).try_into()?;
     println!("{:?}", fp0);
-    println!("{:?}", fp0.abs());
+    println!("{:?}", fp0.abs() << 2);
     Ok(())
 }
