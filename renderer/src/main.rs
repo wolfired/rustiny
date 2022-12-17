@@ -6,10 +6,10 @@ use std::path::Path;
 
 use rustiny_computer_graphic::line_bresenham;
 use rustiny_computer_graphic::Point2;
-use rustiny_fixed_point::FixedPoint;
+use rustiny_fixed_point::types::FixedPoint;
 use rustiny_linear_algebra::X;
 use rustiny_linear_algebra::Y;
-use rustiny_number::One;
+use rustiny_number::ops::One;
 use rustiny_xfile::obj::Obj;
 use rustiny_xfile::tga::TGAImage;
 

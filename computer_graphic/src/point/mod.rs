@@ -2,7 +2,7 @@
 //!
 //!
 
-mod mod_inner;
-pub use mod_inner::Point2;
-pub use mod_inner::Point3;
-pub use mod_inner::Point4;
+mod types;
+pub use types::Point2;
+pub use types::Point3;
+pub use types::Point4;

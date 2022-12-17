@@ -3,8 +3,8 @@
 
 use std::error::Error;
 
-use rustiny_computer_graphic::Point2;
-use rustiny_linear_algebra::X;
+use rustiny_computer_graphic::point::Point2;
+use rustiny_linear_algebra::vector::X;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut p0: Point2<i8> = [1, 2].into();

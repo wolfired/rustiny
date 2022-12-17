@@ -3,17 +3,17 @@ use std::ops::BitOr;
 use std::ops::BitXor;
 use std::ops::Not;
 
-use rustiny_number::Integer;
-use rustiny_number::One;
-use rustiny_number::Signed;
-use rustiny_number::Unsigned;
-use rustiny_number::WrappingAdd;
-use rustiny_number::WrappingNeg;
-use rustiny_number::WrappingSub;
-use rustiny_number::Zero;
+use rustiny_number::ops::One;
+use rustiny_number::ops::WrappingAdd;
+use rustiny_number::ops::WrappingNeg;
+use rustiny_number::ops::WrappingSub;
+use rustiny_number::ops::Zero;
+use rustiny_number::types::Integer;
+use rustiny_number::types::Signed;
+use rustiny_number::types::Unsigned;
 
 /// 位操作
-/// 
+///
 /// [unset_rightmost_one](`Self::unset_rmo`)    
 /// [set_rightmost_zero](`Self::set_rmz`)    
 /// [unset_trailing_ones](`Self::unset_tos`)    

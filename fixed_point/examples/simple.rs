@@ -3,17 +3,17 @@
 
 use std::error::Error;
 
-use rustiny_fixed_point::FixedPoint;
-use rustiny_number::Abs;
-use rustiny_number::CheckedAdd;
-use rustiny_number::CheckedShl;
-use rustiny_number::Integer;
-use rustiny_number::OverflowingAdd;
-use rustiny_number::OverflowingDiv;
-use rustiny_number::OverflowingMul;
-use rustiny_number::OverflowingNeg;
-use rustiny_number::OverflowingPow;
-use rustiny_number::OverflowingShl;
+use rustiny_fixed_point::types::FixedPoint;
+use rustiny_number::ops::Abs;
+use rustiny_number::ops::CheckedAdd;
+use rustiny_number::ops::CheckedShl;
+use rustiny_number::ops::OverflowingAdd;
+use rustiny_number::ops::OverflowingDiv;
+use rustiny_number::ops::OverflowingMul;
+use rustiny_number::ops::OverflowingNeg;
+use rustiny_number::ops::OverflowingPow;
+use rustiny_number::ops::OverflowingShl;
+use rustiny_number::types::Integer;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let fp0: FixedPoint<i8, 4> = (-0.5f32).try_into()?;

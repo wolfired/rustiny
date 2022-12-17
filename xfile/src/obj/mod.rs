@@ -11,7 +11,7 @@ use std::path::Path;
 
 use rustiny_computer_graphic::Point2;
 use rustiny_computer_graphic::Point3;
-use rustiny_number::Number;
+use rustiny_number::types::Number;
 
 #[derive(Debug)]
 pub struct Obj<T: Number> {

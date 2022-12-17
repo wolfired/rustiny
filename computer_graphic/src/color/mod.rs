@@ -2,10 +2,12 @@
 //!
 //!
 
-mod mod_inner;
-pub use mod_inner::Color3;
-pub use mod_inner::Color4;
-pub use mod_inner::A;
-pub use mod_inner::B;
-pub use mod_inner::G;
-pub use mod_inner::R;
+mod types;
+pub use types::Color3;
+pub use types::Color4;
+
+mod ops;
+pub use ops::A;
+pub use ops::B;
+pub use ops::G;
+pub use ops::R;
