@@ -4,11 +4,11 @@
 use std::error::Error;
 use std::path::Path;
 
-use rustiny_computer_graphic::line_bresenham;
-use rustiny_computer_graphic::Point2;
+use rustiny_computer_graphic::line::bresenham;
+use rustiny_computer_graphic::point::Point2;
 use rustiny_fixed_point::types::FixedPoint;
-use rustiny_linear_algebra::X;
-use rustiny_linear_algebra::Y;
+use rustiny_linear_algebra::vector::X;
+use rustiny_linear_algebra::vector::Y;
 use rustiny_number::ops::One;
 use rustiny_xfile::obj::Obj;
 use rustiny_xfile::tga::TGAImage;
@@ -30,7 +30,7 @@ fn simple_line_fp<P: AsRef<Path>>(tga_file: P) -> Result<(), Box<dyn Error>> {
     let p0: Point2<FixedPoint<i32, 8>> = [0.try_into()?, 0.try_into()?].into();
     let p1: Point2<FixedPoint<i32, 8>> = [w.try_into()?, h.try_into()?].into();
 
-    line_bresenham(p0, p1, |x, y| {
+    bresenham(p0, p1, |x, y| {
         img.set_color(
             x.try_into().unwrap(),
             y.try_into().unwrap(),
@@ -55,7 +55,7 @@ fn simple_line_f<P: AsRef<Path>>(tga_file: P) -> Result<(), Box<dyn Error>> {
     let p0: Point2<i32> = [0, 0].into();
     let p1: Point2<i32> = [w, h].into();
 
-    line_bresenham(p0, p1, |x, y| {
+    bresenham(p0, p1, |x, y| {
         img.set_color(x as u16, y as u16, 255, 255, 255, 255);
     });
 
@@ -85,15 +85,15 @@ fn african_head<P: AsRef<Path>>(obj_file: P, tga_file: P) -> Result<(), Box<dyn 
         let p1 = vs[f.1 .0 - 1];
         let p2 = vs[f.2 .0 - 1];
 
-        line_bresenham(p0, p1, |x, y| {
+        bresenham(p0, p1, |x, y| {
             img.set_color(x as u16, y as u16, 255, 255, 255, 255)
         });
 
-        line_bresenham(p1, p2, |x, y| {
+        bresenham(p1, p2, |x, y| {
             img.set_color(x as u16, y as u16, 255, 255, 255, 255)
         });
 
-        line_bresenham(p2, p0, |x, y| {
+        bresenham(p2, p0, |x, y| {
             img.set_color(x as u16, y as u16, 255, 255, 255, 255)
         });
     }

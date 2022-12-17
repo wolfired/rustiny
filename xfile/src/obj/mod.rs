@@ -9,8 +9,8 @@ use std::fs::OpenOptions;
 use std::io::Read;
 use std::path::Path;
 
-use rustiny_computer_graphic::Point2;
-use rustiny_computer_graphic::Point3;
+use rustiny_computer_graphic::point::Point2;
+use rustiny_computer_graphic::point::Point3;
 use rustiny_number::types::Number;
 
 #[derive(Debug)]

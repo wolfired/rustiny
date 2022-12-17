@@ -3,4 +3,4 @@
 //! 
 
 mod bresenham;
-pub use bresenham::line;
+pub use bresenham::line as bresenham;
