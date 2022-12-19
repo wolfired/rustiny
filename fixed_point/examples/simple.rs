@@ -16,8 +16,14 @@ use rustiny_number::ops::OverflowingShl;
 use rustiny_number::types::Integer;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let fp0: FixedPoint<i8, 4> = (-0.5f32).try_into()?;
-    println!("{:?}", fp0);
-    println!("{:?}", fp0.abs() << 2);
+    // let fp0: FixedPoint<u8, 7> = FixedPoint::<u8, 7>::MAX;
+    // println!("{:?}", fp0);
+
+
+    println!("{:?}", FixedPoint::<i8, 7>::MIN);
+    println!("{:?}", FixedPoint::<i8, 7>::MAX);
+    println!("{:?}", FixedPoint::<u8, 7>::MIN);
+    println!("{:?}", FixedPoint::<u8, 7>::MAX);
+
     Ok(())
 }
